@@ -1,4 +1,4 @@
-(ns user)
+(ns projecteuler.core)
 
 ;; Project Euler
 ;; Problem 010

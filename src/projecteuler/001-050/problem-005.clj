@@ -1,4 +1,4 @@
-(ns user
+(ns projecteuler.core
   (:gen-class)
   (:require [clojure.string :as str])
 )

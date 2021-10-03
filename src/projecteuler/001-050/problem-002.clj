@@ -14,3 +14,5 @@
 
 (reduce + (filter even? (take-while (partial > 4000000) (fib-seq))))
 ;;4613732
+
+

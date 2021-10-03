@@ -50,3 +50,8 @@
     (recur (+ a b) a (dec cnt)))) ;
 ;; usage: (map (partial fib 1 0) (range 10))  ; => (0 1 1 2 3 5 8 13 21 34)
 
+(defn fib-seq []
+  ((fn fib [a b]
+     (lazy-seq (cons a (fib b (+ a b)))))
+   0 1))
+

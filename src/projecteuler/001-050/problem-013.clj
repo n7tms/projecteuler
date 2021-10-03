@@ -1,4 +1,4 @@
-(ns user)
+(ns projecteuler.core)
 (require '[clojure.string :as str])
 ;(use '[mylibrary :as ml])
 
