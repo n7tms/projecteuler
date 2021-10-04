@@ -1,4 +1,4 @@
-(ns mylibrary)
+(ns projecteuler.core)
 
 ;; for information on how to create/use a custom library, see
 ;; https://www.braveclojure.com/organization/
@@ -36,13 +36,6 @@
 
 
 
-;; generate n-number of fibonacci numbers
-(defn fibs [n]
-  (if (<= 0 n 1)
-    n
-    (+ (fibs (- n 1)) (fibs (- n 2)))))   ;
-
-
 ;; This fibonacci implementation is more efficient -- only one recursion loop.
 (defn fib [a b cnt]
   (if (zero? cnt)
@@ -50,8 +43,13 @@
     (recur (+ a b) a (dec cnt)))) ;
 ;; usage: (map (partial fib 1 0) (range 10))  ; => (0 1 1 2 3 5 8 13 21 34)
 
-(defn fib-seq []
+
+(defn fibs []
   ((fn fib [a b]
      (lazy-seq (cons a (fib b (+ a b)))))
    0 1))
+;; usage:
+;; (fibs) => returns an infinite sequence (list) of fibonacci numbers, from 0 to infinite
+;; (take 10 (fibs)) => the first 10 fibonacci numbers (0 1 1 2 3 5 8 13 21 34)
+;; (last (take 10 (fibs))) => find the 10'th fibonacci number => 34
 
