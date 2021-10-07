@@ -61,3 +61,20 @@
       (loop [val n i n]
         (if (<= i 1) val
             (recur (*' val (dec i)) (dec i))))))
+;;
+;;
+;;
+
+
+(defn pascal-next-row [x]
+  "returns the next row in a Pascal triangle sequence"
+  (let [size (count x)]
+    (for [i (range (inc size))]
+      (if (or (= 0 i) (= size i)) 1
+          (+ (nth x (dec i)) (nth x i))))))
+;; usage:
+;; (pascal-next-row [1 2 1]) => (1 3 3 1)
+;; (take 5 (iterate pascal-next-row [1])) returns the first 5 Pascal triangle rows.
+;;
+
+
