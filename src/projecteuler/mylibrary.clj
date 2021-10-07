@@ -53,3 +53,11 @@
 ;; (take 10 (fibs)) => the first 10 fibonacci numbers (0 1 1 2 3 5 8 13 21 34)
 ;; (last (take 10 (fibs))) => find the 10'th fibonacci number => 34
 
+
+
+(defn factorial [n]
+  "returns the factorial of the given positive integer argument"
+  (if (= n 0) 1
+      (loop [val n i n]
+        (if (<= i 1) val
+            (recur (*' val (dec i)) (dec i))))))
