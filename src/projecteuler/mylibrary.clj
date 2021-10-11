@@ -35,6 +35,11 @@
 ;; Prime solution from http://clj-me.cgrand.net/index.php?s=Primes
 
 
+;; Is a number a prime number
+(defn prime? [n]
+  (not-any? zero? (map #(rem n %) (range 2 n))))
+
+
 
 ;; This fibonacci implementation is more efficient -- only one recursion loop.
 (defn fib [a b cnt]
