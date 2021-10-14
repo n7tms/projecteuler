@@ -151,3 +151,22 @@
   (days (day-of-week y m d)))
 
 
+
+;;
+;; fn addem loops through the digits adding the digits to the previous
+;; sum in the accumulator (acc).
+;; If you were given a problem like:
+;;    If 10! = 3628800, what are the sum of the digits,...
+;;    e.g. 3+6+2+8+8+0+0 = 27
+;; ... you provide the "3628800" (as a string) and add-digits will return 27.
+(defn add-digits
+  "given a 'string' of digits, add-digits returns the sum of the digits"
+  [nums]
+  (loop [acc 0 idx 0]
+    (if (= idx (count nums))
+      acc
+      (recur (+ acc (Integer/parseInt (str (nth nums idx)))) (inc idx) )) 
+    ))
+
+
+
