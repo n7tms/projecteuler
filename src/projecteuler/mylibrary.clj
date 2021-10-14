@@ -90,3 +90,64 @@
   )
 
 
+
+
+;; The following functions are part of a system to calculate the day of the week for any date
+;; between 1700 and 2399, inclusive. 
+;; Based on an algorithm published here: https://artofmemory.com/blog/how-to-calculate-the-day-of-the-week/
+;;
+;; Note: leap-year? can be used as a stand-alone function for ANY year.
+(defn year-code
+  "accepts a 2 or 4 digit year and returns the year-code"
+  [y]
+  (let [year (mod y 100)]
+    (mod (+ year (quot year 4)) 7))
+  )
+
+
+(defn month-code [m]
+  ([0 3 3 6 1 4 6 2 5 0 3 5] (dec m))
+  )
+
+(defn century-code
+  "accepts a 4 digit year (1700-2399) and returns the century-code"
+  [c]
+  (let [cc (quot c 100)]
+    (case cc
+      17 4
+      18 2
+      19 0
+      20 6
+      21 4
+      22 2
+      23 0))
+  )
+
+(defn leap-year?
+  "given a year, returns true if it is a leap year; otherwise, false"
+  [y]
+  (cond (zero? (mod y 400)) true
+        (zero? (mod y 100)) false
+        (zero? (mod y   4)) true
+        :default false)
+  )
+
+(defn leap-year-code
+  "given a month and year, returns -1 if Jan or Feb AND year is a leap year; otherwise, 0"
+  [m y]
+  (if (and (leap-year? y) (or (= m 1) (= m 2))) -1 0)
+  )
+
+(defn day-of-week
+  "given a date, returns the day of the week, 0=Sun, 1=Mon, ... 6=Sat"
+  [y m d]
+  (mod (+ (year-code y) (month-code m) (century-code y) d (leap-year-code m y)) 7))
+
+(def days ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+
+(defn day-of-week-name
+  "given a date, returns the name of the day of the week"
+  [y m d]
+  (days (day-of-week y m d)))
+
+
