@@ -169,4 +169,14 @@
     ))
 
 
+;; produce a list of divisors of n, not including n
+;; e.g. (divisors 10) => (1 2 5)
+(defn divisors
+  ""
+  [n]
+  (filter (comp zero? (partial rem n)) (range 1 n)))
+
+
+
+
 
