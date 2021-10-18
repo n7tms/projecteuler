@@ -33,49 +33,39 @@
 
 (defn abundant? [num]
   "return true if the num is an abundant number (sum of the divisors is greater than the number"
-  (if (< num (reduce + (divisors num)))
-    true
-    false))
+  (< num (reduce + (divisors num)))
+)
+
 
 (def abundants
   "generate a sequence of abundant numbers, 12-28123"
-  (remove nil?
-          (for [x (range 12 28123)]
-            (if (abundant? x)
-              x)
-            )))
+  (into (sorted-set) (filter abundant? (range 12 28124)))
+)
 
 ;;(count abundants)   ;; => 6965
 
-;; iterate through pairs of abundants looking for two that sum to the given num
-;; return true if a pair is found.
-(defn sum-of-abundants? [num]
-  (let [x take-while (partial > num) abundants
-        y take-while (partial > num) abundants]
-    
-    )
+(->> (for [i abundants j abundants
+           :let [num (+ i j)]
+           :when (< num 28124)]
+       num)
+     (distinct)
+     (reduce +)
+     (- (reduce + (range 1 28124))) ;; subtract the sum of the abundants from the sum of all the numbers to get the sum of the numbers that are not abundant.
+)  ;; => 4179871 (29 seconds)
 
-  )
-  
-(reduce + ([1 2 3] [1 2 3]))
-
-
-(take-while (partial > 100 ) abundants)
-
-
-;; (let a [create a list of all abundant numbers < 28123]
-;; (let [x range 1 28123]
-;; check combinations of a1 + a2 where a < x
-;; ... if a combination is found, then move on.
-;; ... if one is not found, then remember this number
+(defn abundant-sum? [n abundant]
+  (some #(abundant (- n %))
+        (take-while #(< % n)  abundant)))
 
 
 
+;; Optimized
+(->> (range 1 28124)
+     (remove #(abundant-sum? % abundants))
+     (reduce +))   ;; => 4179871 (4 seconds)
 
 
-
-
-
-
-
+;;
+;; with a little help from http://mishadoff.com/blog/clojure-euler-problem-023/
+;;
 
