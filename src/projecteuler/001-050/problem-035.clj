@@ -5,34 +5,19 @@
 (ns projecteuler
   (:require [clojure.string :as str]))
 
-;; Is a number a prime number
+
 (defn prime? [n]
+  "returns true if n is prime, false if it is not"
   (not-any? zero? (map #(rem n %) (range 2 n))))
 
 ;; I only need to check odd numbers (range 3 1000000 2) because even numbers are not prime
 ;; I also only need to check numbers that have odd numbers in them, because if it contains
-;; an even number then at least of the circulars will not be prime.
-;;
-
-
-(defn circular-prime? [num]
-  )
-
-(range 3 20 2)
-
-(contains? [1 2 3 4] 5)
-
-;; does the set contain an even number? yes=true, no=nil
-;; zero is considered even, so this works well.
-(some #(even? %) [1  3 0 5])
-
-;; create a list of number from 3 to 1000000 that does not contain any even numbers
-;; or numbers containing a 5
+;; an even number (or a 5) then at least one of the circulars will not be prime.
 (def candidates
   (cons 2
         (cons 5
               (remove #(not (prime? %))
-                      (remove nil? (for [x (range 3 100 2)]
+                      (remove nil? (for [x (range 3 1000000 2)]
                                      (if (some #(even? %) (mapv #(Integer/parseInt %) (re-seq #"\d" (str x))))
                                        nil
                                        (if (some #{5} (mapv #(Integer/parseInt %) (re-seq #"\d" (str x))))
@@ -40,18 +25,13 @@
                                          x))
                                      ))))))
 
-(def digits [1 2 3])
-
-(defn vectorize [x]
-  (for [a x]
-    [a]))
-
-
 (defn rotate [x]
+  "remove the last element in the list x and append it to the front"
   (vec  (cons (last x) (butlast x))) 
 )
 
 (defn rotated [digits]
+  "given a vector of digits, returns a vector of rotated vectors"
   (loop [cnt (count digits) x digits result []]
     (if (= cnt 0)
       result
@@ -60,20 +40,32 @@
     )
 )
 
-(for [x candidates]
-  (map #(prime? %) (map #(Integer/parseInt (apply str %)) (rotated  (mapv #(Integer/parseInt %) (re-seq #"\d" (str 11))))))
+(defn circular-prime? [num]
+  "returns true if all rotations of num are prime; otherwise, false"
+  (if (empty?
+       (filter false? 
+               (mapv
+                #(prime? %)
+                (map #(Integer/parseInt (apply str %))
+                     (rotated
+                      (mapv #(Integer/parseInt %)
+                            (re-seq #"\d" (str num))))))))
+    true
+    false)
 )
 
-(if (some #{false} '((true) (true) (true) (true) (true) (true) (false) (true) (true) (true) (true) (true) (true) (true)))
-  false
-  true) 
+(defn problem-035 []
+  "iterate through the candidates checking for circular prime. 
+   return the count"
+  (count (remove nil?
+                 (for [x candidates]
+                   (if (circular-prime? x) x nil)))))
 
-(map #(prime? %) (map #(Integer/parseInt (apply str %)) (rotated  (mapv #(Integer/parseInt %) (re-seq #"\d" (str 11))))))
 
-(rotated (vec (list 135)))
+(problem-035)  ;; => 55
 
-(prime? 91)
-(Integer/parseInt (apply str [1 2 3]))
+
+
 
 
 
