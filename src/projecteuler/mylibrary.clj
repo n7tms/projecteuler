@@ -184,4 +184,12 @@
   )
 
 
+(def pentagonal-numbers
+  "lazy-sequence of pentagonal numbers"
+  (map (fn [x] (int (* x (- (* 3 x) 1) 0.5))) (range)))
+
+(defn abs [n]
+  "given a number n, return the absolute value of n"
+  (max n (- n)))
+
 
