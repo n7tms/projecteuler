@@ -178,5 +178,10 @@
 
 
 
+(def triangle-numbers
+  "lazy-sequence of triangle numbers"
+  (map (fn [x] (int (* 0.5 x (inc x)))) (range))
+  )
+
 
 
