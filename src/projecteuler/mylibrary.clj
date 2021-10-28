@@ -85,7 +85,7 @@
 
 
 (defn power
-  "raise \"base\" to the power of \"exp\""
+  "raise 'base' to the power of 'exp'"
   [base exp]
   (reduce * (repeat (bigint exp) (bigint base)))
   )
