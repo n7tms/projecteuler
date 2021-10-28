@@ -229,3 +229,12 @@
   (max n (- n)))
 
 
+(defn same-digits?
+  "compare the digits in num1 and num2; return true if they both contain the same digits"
+  [num1 num2]
+  (=
+   (sort (mapv #(Integer/parseInt %) (clojure.string/split (str num1) #"" )))
+   (sort (mapv #(Integer/parseInt %) (clojure.string/split (str num2) #"" )))
+   )
+  )
+
