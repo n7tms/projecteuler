@@ -10,8 +10,8 @@
 ;; What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
 ;;
 
-(ns projecteuler)
-(require '[clojure.math.combinatorics])
+(ns projecteuler
+  (:require [clojure.math.combinatorics :as combo]))
 
 ;; (defn permutations [s]
 ;;   (lazy-seq
@@ -28,19 +28,28 @@
 ;; (permutations #{0 1 2})
 ;; (nth (permutations #{0 1 2}) 2)  ;; => (1 0 2)
 
-(nth  (permutations #{0 1 2 3 4 5 6 7 8 9}) 999999) ;; => (1 9 5 4 8 7 3 6 2 0)
+;(nth  (permutations #{0 1 2 3 4 5 6 7 8 9}) 999999) ;; => (1 9 5 4 8 7 3 6 2 0)
 
 
-(defn perms [s]
-  (lazy-seq
-   (if (seq (rest s))
-     (apply concat (for [x s]
-                     (map #(cons x %) (perms (remove #{x} s)))))
-     [s])))
+;; (defn perms [s]
+;;   (lazy-seq
+;;    (if (seq (rest s))
+;;      (apply concat (for [x s]
+;;                      (map #(cons x %) (perms (remove #{x} s)))))
+;;      [s])))
 
-(nth (perms #{0 1 2 3 4 5 6 7 8 9}) 999999)   ;; => (1 9 5 4 8 7 3 6 2 0)
+;; (nth (perms #{0 1 2 3 4 5 6 7 8 9}) 999999)   ;; => (1 9 5 4 8 7 3 6 2 0)
 
 
 ;; several different algorithms later, I always produce the same result, but it is 
 ;; not accepted by project euler.  :-(
+;; However, using the permutations function in math.combinatorics seem to provide an answer rather quickly.
+;; (hmmm?)
+
+
+(defn problem-024 [digits n]
+  (apply str (nth (combo/permutations digits) (dec n))))
+
+
+(problem-024 "0123456789" 1000000) ;; => 2783915460
 
