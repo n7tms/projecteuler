@@ -238,3 +238,14 @@
    )
   )
 
+
+;; Determines if a sequence of digit (1 2 3 ... n) is pandigital...meaning it contains all
+;; of the digits, 1-9, only once. 453267981 is pandigital. 46788321 is not.
+;; This function could be easily modified to determine if a number is pandigital for 1-5 or 1-7, etc.
+(defn pandigital? [digits]
+  "returns true if a seq of digits is pandigital-9"
+  (and (nil? (some zero? digits))
+       (= 9 (count digits))
+       (unique-digits? digits)))
+
+
