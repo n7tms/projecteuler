@@ -2,8 +2,9 @@
 ;; Problem 104 - Pandigital Fibonacci Ends
 ;;
 
+(ns projecteuler)
 
-(defn fibs []
+(def fibs
   ((fn fib [a b]
      (lazy-seq (cons a (fib b (+ (bigint a) (bigint b))))))
    0 1))
@@ -25,6 +26,13 @@
        (= 9 (count digits))
        (unique-digits? digits)))
 
+(defn power
+  "raise 'base' to the power of 'exp'"
+  [base exp]
+  (reduce * (repeat (bigint exp) (bigint base)))
+  )
+
+
 
 (defn problem-104 []
   (loop [idx 2749]
@@ -38,4 +46,27 @@
 ;(problem-104)
 
 
+;(nth fibs 329468)
 
+
+;; My pandigital? function is expecting a sequence of digits (e.g. (1 2 3 4)).
+;; This function is just sending an integer of digits (e.g. 1234).
+(defn todd []
+
+  (loop [n 2
+         fn1 1
+         fn2 1]
+    (let [fn (+ fn1 fn2)
+          tail (mod fn 1000000000)]
+      (if (pandigital? tail)
+        (let [digits (+ 1 (Math/log fn))]
+          (if (> digits 9)
+            (if (pandigital? (/ fn (power 10 (- digits 9))))
+              n
+              (recur (inc n) fn2 (inc fn2)))))
+        )))
+
+
+  )
+
+(todd)
