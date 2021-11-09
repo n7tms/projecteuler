@@ -8,52 +8,29 @@
 ;; What is the largest n-digit pandigital prime that exists?
 ;;
 
-(ns projecteuler)
-
-(defn to-digits [num]
-  (map #(Character/getNumericValue %) (str num)))
+(ns projecteuler
+  (:require [clojure.math.combinatorics :as combo]))
 
 
-(defn unique-digits? [digits]
-  (let [unique (distinct digits)]
-    (= (count unique) (count digits))))
-
-(defn pandigital? [digits]
-  "returns true if a seq of digits is pandigital-9"
-  (and (nil? (some zero? digits))
-       (= 9 (count digits))
-       (unique-digits? digits)))
-
-(defn primes []
-  (letfn [(enqueue [sieve n step]
-            (let [m (+ n step)]
-              (if (sieve m)
-                (recur sieve m step)
-                (assoc sieve m step))))
-          (next-sieve [sieve candidate]
-            (if-let [step (sieve candidate)]
-              (-> sieve
-                (dissoc candidate)
-                (enqueue candidate step))
-              (enqueue sieve candidate (+ candidate candidate))))
-          (next-primes [sieve candidate]
-            (if (sieve candidate)
-              (recur (next-sieve sieve candidate) (+ candidate 2))
-              (cons candidate 
-                (lazy-seq (next-primes (next-sieve sieve candidate) 
-                            (+ candidate 2))))))]
-    (cons 2 (lazy-seq (next-primes {} 3)))))
+(defn prime? [n]
+  (not-any? zero? (map #(rem n %) (range 2 n))))
 
 
-;(time (apply max (take 1000000 (primes))))
-;(time (nth (primes) 10000000))
+(def perms (combo/permutations "7654321"))
+;; Interestingly, permutations greater than 7654321 (ie. 87654321 and 987654321) did not yield any
+;; prime numbers.
 
-(def all-primes (take 200000000 (primes)))
+;; This is a brute force solution. 
+;; Make a list of all of the permutations...
+;; find the prime ones...
+;; get the maximum one.
+(defn problem-041 []
+  (apply max
+         (remove nil?
+                 (for [x perms]
+                   (let [y (Integer/parseInt (apply str x))]
+                     (if (prime? y)
+                       y))))))
 
-(apply max
-          (for [x (range 100000000 200000000)]
-            (if (pandigital? (nth all-primes x))
-              x)))
-
-
+(problem-041)   ;; => 7652413
 
