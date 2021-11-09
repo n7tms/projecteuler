@@ -258,3 +258,17 @@
        (unique-digits? digits)))
 
 
+;; Find the prime factors of n
+(defn factors-starting-at [f n]
+  (cond
+    (> f (Math/sqrt n)) (if (= n 1) [] [n])
+    (= 0 (mod n f)) (cons f (factors-starting-at f (/ n f)))
+    :else (recur (inc f) n)))
+
+(defn prime-factors-of
+  "returns a list of prime factors of n"
+  [n]
+  (factors-starting-at 2 n))
+
+
+
