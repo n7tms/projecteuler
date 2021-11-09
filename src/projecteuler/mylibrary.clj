@@ -1,3 +1,4 @@
+
 (ns projecteuler.core)
 
 ;; for information on how to create/use a custom library, see
@@ -24,6 +25,7 @@
                 (lazy-seq (next-primes (next-sieve sieve candidate) 
                             (+ candidate 2))))))]
     (cons 2 (lazy-seq (next-primes {} 3)))))
+
 
 
 ;; usage:
