@@ -32,29 +32,31 @@
     (cons 2 (lazy-seq (next-primes {} 3)))))
 
 
-
-;; usage:
-;; (primes) => returns an infinite list of prime numbers from 2 to infinite
-;; (take 10 (primes)) => the first 10 prime numbers (2 3 5 7 11 13 17 19 23 29)
-;; (last (take 10 (primes))) => find the 10'th prime number => 29
-
-
-;; Prime solution from http://clj-me.cgrand.net/index.php?s=Primes
-
-
-;; Is a number a prime number
 (defn prime? [n]
   (not-any? zero? (map #(rem n %) (range 2 n))))
 
+
+(defn to-digits [num]
+  (map #(Character/getNumericValue %) (str num)))
+
+
 (defn problem-049 []
   (for [n (filter #(> % 999) (take-while #(< % 10000) (primes))) ]
-    (let [x (filter #(> % n) (sort (combo/permutations n)))]
+    (let [x (filter #(> % n) (map #(Integer/parseInt %) (map #(apply str %) (sort (combo/permutations (to-digits n))))))]
       (if (> (count x) 1)
-        (if (= (- (nth x 0) n) (- (nth x 1) (nth x 0)))
-          (if (and (prime? (nth x 0)) (prime? (nth x 1)))
-            (str n (nth x 0) (nth x 1)))))
+        (let [y1 (nth x 0)
+              y2 (nth x 1)]
+          (if (= (- y1 n) (- y2 y1))
+            (if (and (prime? y1) (prime? y2))
+              (str n y1 y2)))))
       )
     ))
 
 
-(sort (combo/permutations '(1 2 3 4)))
+(def testing (filter #(> % 3000) (map #(Integer/parseInt %) (map #(apply str %) (sort (combo/permutations (to-digits 1487)))))))
+
+(nth testing 1)
+;(problem-049)
+
+
+
