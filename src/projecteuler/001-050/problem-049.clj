@@ -41,22 +41,25 @@
 
 
 (defn problem-049 []
-  (for [n (filter #(> % 999) (take-while #(< % 10000) (primes))) ]
-    (let [x (filter #(> % n) (map #(Integer/parseInt %) (map #(apply str %) (sort (combo/permutations (to-digits n))))))]
-      (if (> (count x) 1)
-        (let [y1 (nth x 0)
-              y2 (nth x 1)]
-          (if (= (- y1 n) (- y2 y1))
-            (if (and (prime? y1) (prime? y2))
-              (str n y1 y2)))))
-      )
-    ))
+  (remove nil?
+          (for [n (filter #(> % 999) (take-while #(< % 10000) (primes))) ]
+            (let [x (filter #(> % n) (sort (map #(Integer/parseInt %) (map #(apply str %) (combo/permutations (to-digits n))))))]
+              (if (> (count x) 1)
+                (let [y1 (nth x 0)
+                      y2 (nth x 1)]
+                  (if (= (- y1 n) (- y2 y1))
+                    (if (and (prime? y1) (prime? y2))
+                      (str n y1 y2)))))
+              )
+            )))
 
 
-(def testing (filter #(> % 3000) (map #(Integer/parseInt %) (map #(apply str %) (sort (combo/permutations (to-digits 1487)))))))
+(def testing (sort  (map #(Integer/parseInt %) (map #(apply str %) (combo/permutations (to-digits 1487))))))
 
-(nth testing 1)
-;(problem-049)
+
+(problem-049)
+
+;(sort (map #(Integer/parseInt %) (map #(apply str %) (combo/permutations (to-digits 1487)))))
 
 
 
