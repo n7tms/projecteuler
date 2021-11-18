@@ -30,7 +30,7 @@
 ;;    let y = iterate through the list of prime numbers up to x
 ;;        
 
-(def some-primes (take-while #(< % 1000000) (primes)))
+(def some-primes (take-while #(< % 1000) (primes)))
 
 (defn candidates [max-num]
   (take-while #(< % (/ max-num 2)) (primes)))
@@ -59,7 +59,7 @@
   )
 
 
-;(cps)
+(time  (cps))
 
 
 
