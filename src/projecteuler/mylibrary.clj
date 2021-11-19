@@ -272,3 +272,25 @@
 
 
 
+(defn lazy-accum [seq]
+  "given a lazy sequence seq, returns a lazy sequence of the sums of elements up to each element in the sequence"
+  (map first (iterate (fn [[sum s]]
+                        [(+ sum (first s)) (next s)])
+                      [(first seq) (rest seq)])))
+
+;; Example: (make-seq-accumulator (primes))  ;; => (2 5 10 17 28 ...)
+
+
+(defn accum [seq]
+  "Returns a sequence of the sums of elements up to each element in seq"
+  (loop [e (first seq)
+         r (rest seq)
+         sums [0]]
+    (if (nil? e)
+      (rest sums)
+      (recur (first r) (rest r) (conj sums (+ e (last sums)))))))
+
+;; Example: (accum '(1 2 3 4))  ;; => (1 3 6 10)
+
+
+
