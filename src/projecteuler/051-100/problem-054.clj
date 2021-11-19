@@ -30,10 +30,13 @@
 
 (def cards "23456789TJQKA")
 
-
 (def player1 "8C TS KC 9H 4S")
 (def player2 "2C 3S 8S 8D TD")
-(def player3 "TD JD KD AD QD")
+(def player3 "TD TS TC TH KC")
+
+(def small "8C TS KC 9H 4S 7D 2S 5D 3S AC
+5C AD 5D AC 9C 7C 5H 8D TD KS")
+(def large (slurp "src/projecteuler/051-100/problem-054-input.txt"))
 
 ;; A function to rank the hand
 ;; Return: rank & value of cards highest to lowest
@@ -61,54 +64,121 @@
              ;; determine what kind of hand this is
 )
 
-(defn royal-flush? [hand]
+(defn royal-flush [hand]
   (if (and
        (= (map :card hand) '(10 11 12 13 14))
-       (= 1 (count (distinct (map :suit (parse-hand player1))))))
-    true
-    false)
+       (= 1 (count (distinct (map :suit hand)))))
+    {:rank 10 :value 0}
+    {:rank 0 :value 0})
   )
 
-(defn straight-flush? [hand]
+
+(defn straight-flush [hand]
   (if (and
-       (= 1 (count (distinct (map :suit (hand)))))
-       (consecutive? (map :card (hand))))
-    true
-    false))
+       (= 1 (count (distinct (map :suit hand))))
+       (consecutive? (map :card hand)))
+    {:rank 9 :value (apply max (map :card hand))}
+    {:rank 0 :value 0}))
 
-(defn four-of-a-kind? [hand]
-  (if (= 2 (count (distinct (map :card (hand)))))
-    true
-    false))
 
-(defn full-house? [hand]
-  
-  )
+(defn four-of-a-kind [hand]
+  (if (some #(= 4 %) (vals (frequencies (map :card hand))))
+    {:rank 8 :value (key (apply max-key val (frequencies (map :card hand))))}
+    {:rank 0 :value 0}))
 
-(defn flush? [])
-(defn straight? [])
-(defn three-of-a-kind? [])
-(defn two-pairs? [])
-(defn one-pair? [])
-(defn high-card? [])
+(defn full-house [hand]
+  (if (and
+       (= 2 (count (distinct (map :card hand))))
+       (some #(= 2 %) (vals (frequencies (map :card hand))))
+       (some #(= 3 %) (vals (frequencies (map :card hand)))))
+    {:rank 7 :value (key (apply max-key val (frequencies (map :card hand))))}
+    {:rank 0 :value 0}))
 
-(frequencies (map :card (parse-hand player1)))
+(defn flush-suit [hand]
+  (if (= 1 (count (distinct (map :suit hand))))
+    {:rank 6 :value (apply max (map :card hand))}
+    {:rank 0 :value 0}))
+
+(defn straight [hand]
+  (if (consecutive? (map :card hand))
+    {:rank 5 :value (apply max (map :card hand))}
+    {:rank 0 :value 0}))
+
+(defn three-of-a-kind [hand]
+  (if (some #(= 3 %) (vals (frequencies (map :card hand))))
+    {:rank 4 :value (apply max (map :card hand))}
+    {:rank 0 :value 0}))
+
+(defn two-pairs [hand]
+  (let [x (sort (comp - compare) (vals (frequencies (map :card hand))))]
+    (if (and
+         (= (first x) 2)
+         (= (second x) 2))
+      {:rank 3 :value (key (apply max-key val (frequencies (map :card hand))))}
+      {:rank 0 :value 0})))
+
+(defn one-pair [hand]
+  (if (some #(= 2 %) (vals (frequencies (map :card hand))))
+    {:rank 2 :value (key (apply max-key val (frequencies (map :card hand))))}
+    {:rank 0 :value 0}))
+
+(defn high-card [hand]
+  {:rank 1 :value (apply max (map :card hand))})
+
+
 
 (defn evaluate-hand [hand]
   (let [p-hand  (parse-hand hand)]
-    (royal-flush? p-hand))
+    (apply max-key :rank 
+           (map #(% p-hand) [royal-flush straight-flush four-of-a-kind full-house flush-suit straight three-of-a-kind two-pairs one-pair high-card]))
+)
   )
 
-(evaluate-hand player3)
+
+(def player4 "6D 3H 8D 7C JS")
+
+
+(def small2 "8C TS KC 9H 4S 7D 2S 5D 3S AC
+5C AD 5D AC 9C 7C 5H 8D TD KS")
+(def small1 "8C TS KC 9H 4S 7D 2S 5D 3S AC")
+
+(evaluate-hand player4)
+
+
+(def input
+  (->> small2
+       (string/split-lines)
+       flatten
+       ))
+
+(defn winner? [hands]
+;  (println hands)
+  (let [p1 (subs  hands 0 14)
+        p2 (subs  hands 15 29)]
+    (if (> (:rank (evaluate-hand p1)) (:rank (evaluate-hand p2)))
+      1
+      (if (= (:rank (evaluate-hand p1)) (:rank (evaluate-hand p2)))
+        (if (> (:value (evaluate-hand p1)) (:value (evaluate-hand p2)))
+          1
+          0)
+        0)
+      0)))
+
+
+
+(for [x input]
+  (if  (winner? x)
+    1
+    0)
+    )
+
+input
+
+
 
   ;; a function to compare two hands
   ;; which hand is winner, based on rank
   ;; if rank is the same, who has the next highest card
 
-
-
-
-
-(consecutive? [1 2 4 5 3]) ;; => true
 
 
