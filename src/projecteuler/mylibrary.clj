@@ -60,6 +60,10 @@
 ;; (take 10 (fibs)) => the first 10 fibonacci numbers (0 1 1 2 3 5 8 13 21 34)
 ;; (last (take 10 (fibs))) => find the 10'th fibonacci number => 34
 
+(def another-fib (map first (iterate (fn [[a b]] [b (+' a b)]) [0 1])))
+;; usage:
+;; (take 10 fib) => (0 1 1 2 3 5 8 13 21 34)
+
 
 
 (defn factorial [n]
