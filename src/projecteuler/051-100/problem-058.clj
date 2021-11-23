@@ -1,30 +1,16 @@
+;; Project Euler
+;; Problem 58 - Spiral Primes
+;;
+;; I figured this out on my own, but my algorithm took about 2 days (!!) to obtain a solution.
+;; See blocks below this original code for snippets from other developers for more efficient
+;; solutions.
+;;
+
 (ns projecteuler)
 
 (defn prime? [n]
   (not-any? zero? (map #(rem n %) (range 2 n))))
 
-
-;; let x = the ring
-;; corners we want to look at:
-;;    let square corner (sqc) = (+ (* 2 x) 1)
-;;    let temp = (dec sqc)     (- sqc 1)
-;;    let corner 1 (c1) = (- (* sqc sqc) temp) 
-;;    let corner 2 (c2) = (- (* sqc sqc) (* temp 2))
-;;    let corner 3 (c3) = (- (* sqc sqc) (* temp 3))
-;;
-;;  let number-of-diag-numbers = (+ (* x 4) 1)
-
-
-;; (defn corners [sl]
-;;   (for [side-length (range 3 (inc sl) 2)]
-;;     (let [sqr-corner  (* side-length side-length)  
-;;           corner1     (- sqr-corner (dec side-length))
-;;           corner2     (- sqr-corner (* (dec side-length) 2))
-;;           corner3     (- sqr-corner (* (dec side-length) 3))]
-
-;;       [corner1 corner2 corner3]
-
-;;       )))
 
 
 (defn prime-corners [ring]
@@ -39,10 +25,8 @@
 
 (defn calc-percentage [ring num-primes]
   (float (/ num-primes (+ (* ring 4) 1)))
-;  (float (/ (count (filter #(prime? %) (flatten (corners (+ (* 2 sides) 1))))) (+ (* sides 4) 1)))
 )
 
-(calc-percentage 2 5)
 
 (defn problem-058 []
   (loop [ring 3
@@ -59,6 +43,27 @@
 ;; This took WAAAAAAY too long. 
 ;; I'm committed to finding a faster resolution.
 
+;; ====================================================================================
+;; Other's solutions
+;;
+
+;; roboloco solution (https://roboloco.net/project-euler/problem-58/)
+;; He used the clojure.contrib primes lazy-seq that is now deprecated.
+;; So I substituted my fn to determine if a number is prime.
+;;
+(defn euler-58-loop []
+  (let [corners (fn [n] (take 4 (iterate #(- % (dec n)) (* n n))))]
+    (loop [n 3
+           trues 0
+           falses 1]
+      (let [c (count (filter prime? (corners n)))
+            ts (+ trues c)
+            fs (+ falses (- 4 c))]
+        (if (> 1/10 (/ ts (+ ts fs)))
+          n
+          (recur (+ n 2) ts fs))))))
+
+;(time (euler-58-loop))
 
 
 
