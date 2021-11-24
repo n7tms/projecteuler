@@ -38,7 +38,7 @@
 )
 
 
-(time (problem-058))   ;; => 26241 ("Elapsed time: 1.38044139050265E8 msecs")
+;(time (problem-058))   ;; => 26241 ("Elapsed time: 1.38044139050265E8 msecs")
 
 ;; This took WAAAAAAY too long. 
 ;; I'm committed to finding a faster resolution.
@@ -64,6 +64,7 @@
           (recur (+ n 2) ts fs))))))
 
 ;(time (euler-58-loop))
+
 
 
 
