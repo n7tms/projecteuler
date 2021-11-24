@@ -128,7 +128,7 @@
 
 ;(time (euler-60-4))  ;; => 792
 
-;(time (euler-60))
+(time (euler-60))
 
 
 
