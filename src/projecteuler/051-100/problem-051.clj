@@ -59,6 +59,8 @@
          :when (<= family (count g))]
      (map #(apply str %) g))))
 
-;(time (euler-51 8))
+(time (euler-51 8))   ;; => ("121313" "222323" "323333" "424343" "525353" "626363" "828383" "929393")
+
+;; Solution in 3.5 hours.
 
 
