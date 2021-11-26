@@ -126,9 +126,12 @@
            d (filter #(all-pairs-prime? [a b c] %) (drop-while #(<= % c) ps))]
        (+ a b c d )))))
 
-;(time (euler-60-4))  ;; => 792
+;(euler-60-4)  ;; => 792
 
-(time (euler-60))
+(euler-60)   ;; => 26033 (in 9.32E7 msec, about 26 hours!)
+ 
+
+
 
 
 
