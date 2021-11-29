@@ -32,9 +32,29 @@
 ;; (primes) => returns an infinite list of prime numbers from 2 to infinite
 ;; (take 10 (primes)) => the first 10 prime numbers (2 3 5 7 11 13 17 19 23 29)
 ;; (last (take 10 (primes))) => find the 10'th prime number => 29
-
-
 ;; Prime solution from http://clj-me.cgrand.net/index.php?s=Primes
+
+
+;; https://thesoftwaresimpleton.com/blog/2015/02/07/primes
+(defn primes-ss [n]
+  (let [root (-> n (Math/sqrt) inc int)
+        sieve (boolean-array n true)]
+    (loop [i 2]
+      (when (< i (Math/sqrt n))
+        (when (aget sieve i)
+          (loop [j (* i 2)]
+            (when (< j n)
+              (aset sieve j false)
+              (recur (+ j i)))))
+        (recur (inc i))))
+    (filter #(aget sieve %) (range 2 n))))
+
+;; Usage:
+;; (primes-ss 100)  => generates a list of primes less then 100
+;; I suggest you use this to generate a "large" list of primes
+;; (eg. (defn primes (primes-ss 1000000) ) and then work off 
+;; that list.
+
 
 
 ;; Is a number a prime number
@@ -210,17 +230,17 @@
   )
 
 
-(def pentagonal-numbers
-  "lazy-sequence of pentagonal numbers"
-  (map (fn [x] (/ (* x (- (* 3 x) 1)) 2)) (iterate inc 1)))
+
+(def triangle-nums   (map #(/ (* % (+ % 1)) 2) (iterate inc 1)))
+(def square-nums     (map #(* % %) (iterate inc 1)))
+(def pentagonal-nums (map #(/ (* % (- (* 3 %) 1)) 2) (iterate inc 1)))
+(def hexagonal-nums  (map #(* % (- (* 2 %) 1)) (iterate inc 1)))
+(def heptagonal-nums (map #(/ (* % (- (* 5 %) 3)) 2)  (iterate inc 1)))
+(def octagonal-nums  (map #(* % (- (* 3 %) 2)) (iterate inc 1)))
+
 
 (defn pentagonal? [value]
   (zero? (rem (+ 1 (Math/sqrt (+ 1 (* 24 value)))) 6)))
-
-
-(def hexagonal-numbers
-  "laxy-sequence of hexagonal numbers"
-  (map (fn [x] (* x (- (* 2 x) 1))) (iterate inc 1)))
 
 (defn hexagonal? [value]
   (let [n (/ (+ (Math/sqrt (+ (* 8 value) 1)) 1) 4)]
