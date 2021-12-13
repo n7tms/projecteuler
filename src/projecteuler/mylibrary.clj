@@ -204,10 +204,13 @@
 
 
 
-(def triangle-numbers
-  "lazy-sequence of triangle numbers"
-  (map (fn [x] (int (* 0.5 x (inc x)))) (range))
-  )
+(def triangle-nums   (map #(/ (* % (+ % 1)) 2) (iterate inc 1)))
+(def square-nums     (map #(* % %) (iterate inc 1)))
+(def pentagonal-nums (map #(/ (* % (- (* 3 %) 1)) 2) (iterate inc 1)))
+(def hexagonal-nums  (map #(* % (- (* 2 %) 1)) (iterate inc 1)))
+(def heptagonal-nums (map #(/ (* % (- (* 5 %) 3)) 2)  (iterate inc 1)))
+(def octagonal-nums  (map #(* % (- (* 3 %) 2)) (iterate inc 1)))
+
 
 (defn triangle? [value]
   (if (< value 0)
@@ -228,15 +231,6 @@
               true
               false))))))
   )
-
-
-
-(def triangle-nums   (map #(/ (* % (+ % 1)) 2) (iterate inc 1)))
-(def square-nums     (map #(* % %) (iterate inc 1)))
-(def pentagonal-nums (map #(/ (* % (- (* 3 %) 1)) 2) (iterate inc 1)))
-(def hexagonal-nums  (map #(* % (- (* 2 %) 1)) (iterate inc 1)))
-(def heptagonal-nums (map #(/ (* % (- (* 5 %) 3)) 2)  (iterate inc 1)))
-(def octagonal-nums  (map #(* % (- (* 3 %) 2)) (iterate inc 1)))
 
 
 (defn pentagonal? [value]
@@ -318,3 +312,59 @@
 
 
 
+;; ====================================================================
+;; Functions to traverse graphs, BFS and DFS
+;; ====================================================================
+ 
+;; graph is a `map` of nodes and the nodes adjacent to it
+(def graph {:A [:B :C]
+            :B [:A :X]
+            :X [:B :Y]
+            :Y [:X]
+            :C [:A :D]
+            :D [:C :E :F]
+            :E [:D :G]
+            :F [:D :G]
+            :G [:E :F]})
+
+(defn visited? [v coll] (some #(= % v) coll))
+
+(defn find-neighbors [v coll] (get coll v))
+
+(defn graph-dfs
+  "Traverses a graph in Depth First Search (DFS)"
+  [graph v]
+  (loop [stack   (vector v) ;; Use a stack to store nodes we need to explore
+         visited []]        ;; A vector to store the sequence of visited nodes
+    (if (empty? stack)      ;; Base case - return visited nodes if the stack is empty
+      visited
+      (let [v           (peek stack)
+            neighbors   (find-neighbors v graph)              ;; right branch first
+;            neighbors   (-> (find-neighbors graph v) reverse) ;; left branch first
+            not-visited (filter (complement #(visited? % visited)) neighbors)
+            new-stack   (into (pop stack) not-visited)]
+        (if (visited? v visited)
+          (recur new-stack visited)
+          (recur new-stack (conj visited v)))))))
+
+
+(defn graph-bfs
+  "Traverses a graph in Breadth First Search (BFS)."
+  [graph v]
+  (loop [queue   (conj clojure.lang.PersistentQueue/EMPTY v) ;; queue to store explored nodes
+         visited []]                                         ;; A vector of visited sequence
+    (if (empty? queue) visited                               ;; Base case - return visited nodes if the queue is empty
+        (let [v           (peek queue)
+              neighbors   (find-neighbors v graph)
+              not-visited (filter (complement #(visited? % visited)) neighbors)
+              new-queue   (apply conj (pop queue) not-visited)]
+          (if (visited? v visited)
+            (recur new-queue visited)
+            (recur new-queue (conj visited v)))))))
+
+
+;; Example usage: (graph-dfs graph :A)
+;; Example usage: (graph-dfs graph :B)
+;; Example usage: (graph-bfs graph :A)
+
+;; ====================================================================
