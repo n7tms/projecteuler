@@ -314,6 +314,7 @@
 
 ;; ====================================================================
 ;; Functions to traverse graphs, BFS and DFS
+;; from http://dnaeon.github.io/graphs-and-clojure/
 ;; ====================================================================
  
 ;; graph is a `map` of nodes and the nodes adjacent to it
